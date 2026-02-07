@@ -128,8 +128,8 @@ const App = () => {
     return `data:image/svg+xml,${encodeURIComponent(svg)}`;
   };
   const heroImg = gradientImage(['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e'], 1200, 500);
-  const card1Img = gradientImage(['#0ea5e9', '#6366f1', '#a855f7'], 800, 400);
-  const card2Img = gradientImage(['#f59e0b', '#ef4444', '#ec4899'], 800, 350);
+  const card1Img = gradientImage([colors.main, colors.sub, colors.accent], 800, 400);
+  const card2Img = gradientImage([colors.accent, colors.main, colors.sub], 800, 350);
   const avatarImg = (() => {
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="150" height="150">
       <defs><linearGradient id="ag" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
