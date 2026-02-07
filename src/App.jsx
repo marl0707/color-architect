@@ -250,8 +250,8 @@ const App = () => {
                   key={num}
                   onClick={() => setActiveSlots(num)}
                   className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-all ${activeSlots === num
-                      ? 'bg-white text-blue-600 shadow-sm'
-                      : 'text-slate-500 hover:text-slate-700'
+                    ? 'bg-white text-blue-600 shadow-sm'
+                    : 'text-slate-500 hover:text-slate-700'
                     }`}
                 >
                   {num}色
@@ -488,27 +488,29 @@ const App = () => {
                 borderColor: 'var(--c-border)'
               }}
             >
-              <div className="absolute inset-0 opacity-10">
-                <img src={heroImg} alt="" className="w-full h-full object-cover" />
+              <div className="absolute inset-0">
+                <img src={`${import.meta.env.BASE_URL}hero.png`} alt="" className="w-full h-full object-cover" />
               </div>
               <div className="relative z-10">
-                <span
-                  className="px-3 py-1 rounded-full text-xs font-bold tracking-wide mb-4 inline-block border"
-                  style={{
-                    borderColor: styleMode === 'bold' ? 'rgba(255,255,255,0.3)' : 'var(--c-sub)',
-                    backgroundColor: styleMode === 'bold' ? 'rgba(255,255,255,0.1)' : 'var(--c-sub)',
-                    color: styleMode === 'bold' ? 'inherit' : 'var(--c-text)'
-                  }}
-                >
-                  NEWS
-                </span>
-                <h1 className="text-3xl md:text-5xl font-extrabold mb-4 leading-tight">
-                  あなたの色で、<span style={{ color: styleMode === 'bold' ? 'var(--c-accent)' : 'var(--c-main)' }}>世界</span>を彩る。
-                </h1>
-                <p className="text-base md:text-lg max-w-2xl mx-auto opacity-80">
-                  最適な配色パターンを見つけるためのシミュレーターへようこそ。<br />
-                  サイドバーやカードUIでの色の見え方を確認しましょう。
-                </p>
+                <div className="inline-block rounded-2xl px-8 py-6" style={{ backgroundColor: 'rgba(255,255,255,0.75)', backdropFilter: 'blur(8px)' }}>
+                  <span
+                    className="px-3 py-1 rounded-full text-xs font-bold tracking-wide mb-4 inline-block border"
+                    style={{
+                      borderColor: styleMode === 'bold' ? 'rgba(255,255,255,0.3)' : 'var(--c-sub)',
+                      backgroundColor: styleMode === 'bold' ? 'rgba(255,255,255,0.1)' : 'var(--c-sub)',
+                      color: styleMode === 'bold' ? 'inherit' : 'var(--c-text)'
+                    }}
+                  >
+                    NEWS
+                  </span>
+                  <h1 className="text-3xl md:text-5xl font-extrabold mb-4 leading-tight">
+                    あなたの色で、<span style={{ color: styleMode === 'bold' ? 'var(--c-accent)' : 'var(--c-main)' }}>世界</span>を彩る。
+                  </h1>
+                  <p className="text-base md:text-lg max-w-2xl mx-auto opacity-80">
+                    最適な配色パターンを見つけるためのシミュレーターへようこそ。<br />
+                    サイドバーやカードUIでの色の見え方を確認しましょう。
+                  </p>
+                </div>
               </div>
             </section>
 
