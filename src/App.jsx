@@ -537,11 +537,8 @@ const App = () => {
                 borderColor: 'var(--c-border)'
               }}
             >
-              <div className="absolute inset-0">
-                <img src={`${import.meta.env.BASE_URL}hero.png`} alt="" className="w-full h-full object-cover" />
-              </div>
               <div className="relative z-10">
-                <div className="inline-block rounded-2xl px-8 py-6" style={{ backgroundColor: 'rgba(255,255,255,0.75)', backdropFilter: 'blur(8px)' }}>
+                <div className="inline-block rounded-2xl px-8 py-6">
                   <span
                     className="px-3 py-1 rounded-full text-xs font-bold tracking-wide mb-4 inline-block border"
                     style={{
