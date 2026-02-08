@@ -74,28 +74,77 @@ const App = () => {
     setColors({ ...colors, main: rc(), sub: rc(), accent: rc() });
   };
 
-  // デザイン理論ベースのスマートランダム生成
-  const generateSmartRandom = () => {
-    const mainH = Math.floor(Math.random() * 360);
-    const mainS = 55 + Math.floor(Math.random() * 30); // 55-85%
-    const mainL = 35 + Math.floor(Math.random() * 20); // 35-55%
+  // デザイン理論ベースのスマートランダム生成（完全ランダムメイン色 + 理論ベース配色）
+  const generateSmartRandom = (forceScheme) => {
+    // ButtonのonClickイベントオブジェクトが渡された場合は無視する
+    const targetScheme = (typeof forceScheme === 'string') ? forceScheme : null;
 
+    // メイン色: 色相は完全ランダム、彩度・明度も幅広くカバー
+    const mainH = Math.floor(Math.random() * 360);
+    const mainS = 20 + Math.floor(Math.random() * 75); // 20-95%（低彩度～高彩度）
+    const mainL = 15 + Math.floor(Math.random() * 70); // 15-85%（暗い～明るい）
+
+    // 6種類の配色スキーム
     const schemes = [
       { name: 'complementary', accentH: (mainH + 180) % 360, subShift: 0 },
       { name: 'splitComplementary', accentH: (mainH + 150 + Math.round(Math.random()) * 60) % 360, subShift: 0 },
       { name: 'analogous', accentH: (mainH + (Math.random() > 0.5 ? 30 : -30) + 360) % 360, subShift: (Math.random() > 0.5 ? 15 : -15) },
       { name: 'triadic', accentH: (mainH + 120) % 360, subShift: 0 },
+      { name: 'tetradic', accentH: (mainH + 90) % 360, subShift: 180 }, // テトラード：メイン、補色(sub)、90度(accent)
+      { name: 'monochromatic', accentH: mainH, subShift: 0 },
     ];
-    const scheme = schemes[Math.floor(Math.random() * schemes.length)];
+
+    // 指定がない場合はランダムに選択
+    const scheme = targetScheme
+      ? schemes.find(s => s.name === targetScheme) || schemes[0]
+      : schemes[Math.floor(Math.random() * schemes.length)];
 
     const mainHex = hslToHex(mainH, mainS, mainL);
-    const subHex = hslToHex((mainH + scheme.subShift + 360) % 360, 30 + Math.floor(Math.random() * 15), 88 + Math.floor(Math.random() * 7));
-    const accentHex = hslToHex(scheme.accentH, 65 + Math.floor(Math.random() * 25), 45 + Math.floor(Math.random() * 15));
 
-    // メインの明度に応じてベース・テキストを自動調整
-    const baseLightness = mainL < 40 ? 96 : 95 + Math.floor(Math.random() * 3);
-    const baseHex = hslToHex(mainH, 15 + Math.floor(Math.random() * 15), baseLightness);
-    const textHex = hslToHex(mainH, 20 + Math.floor(Math.random() * 20), 10 + Math.floor(Math.random() * 10));
+    // メイン色のトーンに応じてサブ色・アクセント色を自動最適化
+    const isLowSat = mainS < 40;
+    const isDark = mainL < 35;
+    const isBright = mainL > 70;
+
+    // サブ色: メインのトーンに連動
+    let subS, subL;
+    if (scheme.name === 'monochromatic') {
+      // モノクロマティック: 彩度・明度で差をつける
+      subS = Math.max(10, Math.min(95, mainS - 20 + Math.random() * 40));
+      subL = mainL > 50 ? Math.max(10, mainL - 30) : Math.min(90, mainL + 30);
+    } else {
+      subS = isLowSat
+        ? 15 + Math.floor(Math.random() * 15)
+        : 25 + Math.floor(Math.random() * 30);
+      subL = isDark
+        ? 85 + Math.floor(Math.random() * 10)
+        : (isBright ? 20 + Math.floor(Math.random() * 15) : 82 + Math.floor(Math.random() * 13));
+    }
+    const subHex = hslToHex((mainH + scheme.subShift + 360) % 360, subS, subL);
+
+    // アクセント色: スキームに応じた色相 + トーン最適化
+    let accentS, accentL;
+    if (scheme.name === 'monochromatic') {
+      // モノクロマティック: サブとも違う変化をつける
+      accentS = Math.min(95, mainS + 10 + Math.floor(Math.random() * 20));
+      accentL = mainL > 50 ? Math.max(5, mainL - 50) : Math.min(95, mainL + 50);
+    } else {
+      accentS = isLowSat
+        ? 50 + Math.floor(Math.random() * 25)
+        : 70 + Math.floor(Math.random() * 25);
+      accentL = isDark
+        ? 60 + Math.floor(Math.random() * 20)
+        : 45 + Math.floor(Math.random() * 15);
+    }
+    const accentHex = hslToHex(scheme.accentH, accentS, accentL);
+
+    // ベース色・テキスト色: メインの明度に応じて自動調整
+    const baseLightness = isDark ? 94 + Math.floor(Math.random() * 4) : 95 + Math.floor(Math.random() * 3);
+    const baseHex = hslToHex(mainH, isLowSat ? 5 + Math.floor(Math.random() * 10) : 8 + Math.floor(Math.random() * 10), baseLightness);
+
+    // テキスト色は視認性重視
+    const textL = 10 + Math.floor(Math.random() * 10);
+    const textHex = hslToHex(mainH, 10 + Math.floor(Math.random() * 10), textL);
 
     setColors({ base: baseHex, main: mainHex, sub: subHex, accent: accentHex, text: textHex });
     setStyleMode('clean');
@@ -141,7 +190,7 @@ const App = () => {
   })();
 
   const [lastScheme, setLastScheme] = useState(null);
-  const schemeLabels = { complementary: '補色', splitComplementary: '分裂補色', analogous: '類似色', triadic: 'トライアド' };
+  const schemeLabels = { complementary: '補色', splitComplementary: '分裂補色', analogous: '類似色', triadic: 'トライアド', tetradic: 'テトラード', monochromatic: 'モノクロマティック' };
 
   const applyTheoryPalette = (type) => {
     let newColors = { ...colors };
